@@ -10,10 +10,13 @@ class Board:
         self.create_board()
     
     def draw_squares(self, win):
-        win.fill(BLACK)
-        for row in range(ROWS):
-            for col in range(row % 2, COLS, 2):
-                pygame.draw.rect(win, RED, (row*SQUARE_SIZE, col *SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+    light_brown = (240, 217, 181)
+    dark_brown = (181, 136, 99)
+    for row in range(ROWS):
+        for col in range(COLS):
+            color = light_brown if (row + col) % 2 == 0 else dark_brown
+            pygame.draw.rect(win, color, (col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+
 
     def move(self, piece, row, col):
         self.board[piece.row][piece.col], self.board[row][col] = self.board[row][col], self.board[piece.row][piece.col]
