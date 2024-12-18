@@ -8,9 +8,17 @@ class Game:
         self.win = win
     
     def update(self):
-        self.board.draw(self.win)
-        self.draw_valid_moves(self.valid_moves)
-        pygame.display.update()
+    self.board.draw(self.win)
+    self.draw_valid_moves(self.valid_moves)
+    
+    # Hover highlight
+    mouse_pos = pygame.mouse.get_pos()
+    row = mouse_pos[1] // SQUARE_SIZE
+    col = mouse_pos[0] // SQUARE_SIZE
+    pygame.draw.rect(self.win, (255, 255, 0), (col*SQUARE_SIZE, row*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE), 3)
+
+    pygame.display.update()
+
 
     def _init(self):
         self.selected = None
