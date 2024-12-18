@@ -45,12 +45,15 @@ class Board:
                     self.board[row].append(0)
         
     def draw(self, win):
-        self.draw_squares(win)
-        for row in range(ROWS):
-            for col in range(COLS):
-                piece = self.board[row][col]
-                if piece != 0:
-                    piece.draw(win)
+    self.draw_squares(win)
+    for row in range(ROWS):
+        for col in range(COLS):
+            piece = self.board[row][col]
+            if piece != 0:
+                piece.draw(win)
+    pygame.display.update()
+    pygame.time.delay(50)  # smooth fade effect when loading board
+
 
     def remove(self, pieces):
         for piece in pieces:
