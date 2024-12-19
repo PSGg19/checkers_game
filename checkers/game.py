@@ -75,3 +75,9 @@ class Game:
             self.turn = WHITE
         else:
             self.turn = RED
+    def draw_turn_banner(self):
+    font = pygame.font.SysFont('comicsans', 30)
+    color = 'Red' if self.turn == RED else 'White'
+    text = font.render(f"Turn: {color}", True, (255, 255, 255))
+    pygame.draw.rect(self.win, (0, 0, 0), (10, 10, 140, 35))  # background box
+    self.win.blit(text, (15, 15))
