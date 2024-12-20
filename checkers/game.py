@@ -7,17 +7,18 @@ class Game:
         self._init()
         self.win = win
 
-    def update(self):
-        self.board.draw(self.win)
-        self.draw_valid_moves(self.valid_moves)
+    def update(self, hover_pos=None):
+    self.board.draw(self.win)
+    self.draw_valid_moves(self.valid_moves)
+    self.draw_turn_banner()
+    if hover_pos:
+        self.draw_hover_highlight(hover_pos)
+    winner = self.winner()
+    if winner:
+        self.draw_winner(winner)
+    pygame.display.update()
+    pygame.time.delay(50)  # Reduced delay for smoother transitions
 
-        # Hover effect
-        mouse_pos = pygame.mouse.get_pos()
-        row = mouse_pos[1] // SQUARE_SIZE
-        col = mouse_pos[0] // SQUARE_SIZE
-        pygame.draw.rect(self.win, (255, 255, 0), (col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE), 3)
-
-        pygame.display.update()
 
     def _init(self):
         self.selected = None
@@ -75,8 +76,4 @@ class Game:
             self.turn = WHITE
         else:
             self.turn = RED
-    def draw_hover_highlight(self, pos):
-    x, y = pos
-    col, row = x // SQUARE_SIZE, y // SQUARE_SIZE
-    rect = pygame.Rect(col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE)
-    pygame.draw.rect(self.win, GOLD, rect, 3)  # GOLD added for better visibility
+    
