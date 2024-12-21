@@ -6,17 +6,13 @@ class Game:
     def __init__(self, win):
         self._init()
         self.win = win
+        self.font = pygame.font.SysFont("arial", 20)
 
     def update(self):
         self.board.draw(self.win)
         self.draw_valid_moves(self.valid_moves)
-
-        # Hover effect
-        mouse_pos = pygame.mouse.get_pos()
-        row = mouse_pos[1] // SQUARE_SIZE
-        col = mouse_pos[0] // SQUARE_SIZE
-        pygame.draw.rect(self.win, (255, 255, 0), (col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE), 3)
-
+        self.draw_turn_indicator()
+        self.draw_hover_highlight()
         pygame.display.update()
 
     def _init(self):
@@ -56,7 +52,6 @@ class Game:
             self.change_turn()
         else:
             return False
-
         return True
 
     def draw_valid_moves(self, moves):
@@ -69,15 +64,24 @@ class Game:
                 15,
             )
 
+    def draw_turn_indicator(self):
+        text = "Turn: RED" if self.turn == RED else "Turn: WHITE"
+        color = RED if self.turn == RED else WHITE
+        pygame.draw.rect(self.win, (30, 30, 30), (10, 10, 150, 30), border_radius=5)
+        label = self.font.render(text, True, color)
+        self.win.blit(label, (20, 15))
+
+    def draw_hover_highlight(self):
+        mouse_pos = pygame.mouse.get_pos()
+        row = mouse_pos[1] // SQUARE_SIZE
+        col = mouse_pos[0] // SQUARE_SIZE
+        pygame.draw.rect(
+            self.win,
+            (255, 255, 0),
+            (col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE),
+            3,
+        )
+
     def change_turn(self):
         self.valid_moves = {}
-        if self.turn == RED:
-            self.turn = WHITE
-        else:
-            self.turn = RED
-    def draw_turn_banner(self):
-    font = pygame.font.SysFont('comicsans', 30)
-    color = 'Red' if self.turn == RED else 'White'
-    text = font.render(f"Turn: {color}", True, (255, 255, 255))
-    pygame.draw.rect(self.win, (0, 0, 0), (10, 10, 140, 35))  # background box
-    self.win.blit(text, (15, 15))
+        self.turn = WHITE if self.turn == RED else RED
