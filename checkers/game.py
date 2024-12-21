@@ -1,50 +1,31 @@
 import pygame
-from .constants import RED, WHITE, BLUE, SQUARE_SIZE
-from checkers.board import Board
+import time
 
 class Game:
     def __init__(self, win):
         self._init()
         self.win = win
-        self.font = pygame.font.SysFont("arial", 20)
+        self.animation_delay = 0.1  # Add animation delay for smoothness
 
     def update(self):
         self.board.draw(self.win)
         self.draw_valid_moves(self.valid_moves)
-        self.draw_turn_indicator()
-        self.draw_hover_highlight()
         pygame.display.update()
 
-    def _init(self):
-        self.selected = None
-        self.board = Board()
-        self.turn = RED
-        self.valid_moves = {}
-
-    def winner(self):
-        return self.board.winner()
-
-    def reset(self):
-        self._init()
-
-    def select(self, row, col):
-        if self.selected:
-            result = self._move(row, col)
-            if not result:
-                self.selected = None
-                self.select(row, col)
-
-        piece = self.board.get_piece(row, col)
-        if piece != 0 and piece.color == self.turn:
-            self.selected = piece
-            self.valid_moves = self.board.get_valid_moves(piece)
-            return True
-
-        return False
+    def _animate_move(self, piece, start_row, start_col, end_row, end_col):
+        steps = 10  # Number of animation steps
+        for i in range(steps):
+            progress = i / float(steps)
+            piece.row = start_row + (end_row - start_row) * progress
+            piece.col = start_col + (end_col - start_col) * progress
+            self.update()
+            time.sleep(self.animation_delay)
 
     def _move(self, row, col):
         piece = self.board.get_piece(row, col)
         if self.selected and piece == 0 and (row, col) in self.valid_moves:
+            start_row, start_col = self.selected.row, self.selected.col
+            self._animate_move(self.selected, start_row, start_col, row, col)
             self.board.move(self.selected, row, col)
             skipped = self.valid_moves[(row, col)]
             if skipped:
@@ -52,7 +33,9 @@ class Game:
             self.change_turn()
         else:
             return False
+
         return True
+
 
     def draw_valid_moves(self, moves):
         for move in moves:
