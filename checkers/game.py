@@ -1,35 +1,25 @@
 import pygame
-import time
+from .constants import MOVE_SOUND, CAPTURE_SOUND
 
 class Game:
     def __init__(self, win):
         self._init()
         self.win = win
-        self.animation_delay = 0.1  # Add animation delay for smoothness
+        pygame.mixer.init()  # Initialize Pygame mixer for sound effects
 
-    def update(self):
-        self.board.draw(self.win)
-        self.draw_valid_moves(self.valid_moves)
-        pygame.display.update()
-
-    def _animate_move(self, piece, start_row, start_col, end_row, end_col):
-        steps = 10  # Number of animation steps
-        for i in range(steps):
-            progress = i / float(steps)
-            piece.row = start_row + (end_row - start_row) * progress
-            piece.col = start_col + (end_col - start_col) * progress
-            self.update()
-            time.sleep(self.animation_delay)
+    def _play_sound(self, sound):
+        pygame.mixer.Sound(sound).play()
 
     def _move(self, row, col):
         piece = self.board.get_piece(row, col)
         if self.selected and piece == 0 and (row, col) in self.valid_moves:
-            start_row, start_col = self.selected.row, self.selected.col
-            self._animate_move(self.selected, start_row, start_col, row, col)
             self.board.move(self.selected, row, col)
             skipped = self.valid_moves[(row, col)]
             if skipped:
                 self.board.remove(skipped)
+                self._play_sound(CAPTURE_SOUND)  # Play capture sound
+            else:
+                self._play_sound(MOVE_SOUND)  # Play move sound
             self.change_turn()
         else:
             return False

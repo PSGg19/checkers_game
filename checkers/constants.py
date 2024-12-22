@@ -10,5 +10,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 BLUE = (0, 0, 255)
 GREY = (128,128,128)
+MOVE_SOUND = "assets/move_sound.wav"  # Path for move sound
+CAPTURE_SOUND = "assets/capture_sound.wav"  # Path for capture sound
 
 CROWN = pygame.transform.scale(pygame.image.load('assets/crown.png'), (44, 25))
