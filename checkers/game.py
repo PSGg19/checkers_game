@@ -5,38 +5,30 @@ class Game:
     def __init__(self, win):
         self._init()
         self.win = win
-        pygame.mixer.init()  # Initialize Pygame mixer for sound effects
+        self.timer_start = time.time()
+        self.time_limit = 30  # Time limit for each turn (in seconds)
+    
+    def update(self):
+        self.board.draw(self.win)
+        self.draw_valid_moves(self.valid_moves)
+        self._draw_timer()
+        pygame.display.update()
 
-    def _play_sound(self, sound):
-        pygame.mixer.Sound(sound).play()
+    def _draw_timer(self):
+        current_time = int(time.time() - self.timer_start)
+        time_left = self.time_limit - current_time
+        if time_left >= 0:
+            font = pygame.font.Font(None, 36)
+            timer_text = font.render(f"Time Left: {time_left}s", True, (255, 255, 255))
+            self.win.blit(timer_text, (500, 10))  # Display at top-right
 
-    def _move(self, row, col):
-        piece = self.board.get_piece(row, col)
-        if self.selected and piece == 0 and (row, col) in self.valid_moves:
-            self.board.move(self.selected, row, col)
-            skipped = self.valid_moves[(row, col)]
-            if skipped:
-                self.board.remove(skipped)
-                self._play_sound(CAPTURE_SOUND)  # Play capture sound
-            else:
-                self._play_sound(MOVE_SOUND)  # Play move sound
-            self.change_turn()
+    def change_turn(self):
+        self.timer_start = time.time()  # Reset timer when turn changes
+        self.valid_moves = {}
+        if self.turn == RED:
+            self.turn = WHITE
         else:
-            return False
-
-        return True
-
-
-    def draw_valid_moves(self, moves):
-        for move in moves:
-            row, col = move
-            pygame.draw.circle(
-                self.win,
-                BLUE,
-                (col * SQUARE_SIZE + SQUARE_SIZE // 2, row * SQUARE_SIZE + SQUARE_SIZE // 2),
-                15,
-            )
-
+            self.turn = RED
     def draw_turn_indicator(self):
         text = "Turn: RED" if self.turn == RED else "Turn: WHITE"
         color = RED if self.turn == RED else WHITE
