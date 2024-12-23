@@ -72,6 +72,7 @@ class Board:
             return "RED"
         return None
 
+
     def get_valid_moves(self, piece):
         moves = {}
         left = piece.col - 1
@@ -79,14 +80,24 @@ class Board:
         row = piece.row
 
         if piece.color == RED or piece.king:
-            moves.update(self._traverse_left(row - 1, max(row - 3, -1), -1, piece.color, left))
-            moves.update(self._traverse_right(row - 1, max(row - 3, -1), -1, piece.color, right))
-
+            moves.update(self._traverse_left(row -1, max(row-3, -1), -1, piece.color, left))
+            moves.update(self._traverse_right(row -1, max(row-3, -1), -1, piece.color, right))
         if piece.color == WHITE or piece.king:
-            moves.update(self._traverse_left(row + 1, min(row + 3, ROWS), 1, piece.color, left))
-            moves.update(self._traverse_right(row + 1, min(row + 3, ROWS), 1, piece.color, right))
+            moves.update(self._traverse_left(row +1, min(row+3, ROWS), 1, piece.color, left))
+            moves.update(self._traverse_right(row +1, min(row+3, ROWS), 1, piece.color, right))
 
+        # Refined AI strategy: prioritize capturing opponent pieces
+        self._prioritize_captures(moves, piece)
+    
         return moves
+
+    def _prioritize_captures(self, moves, piece):
+        captures = {move: path for move, path in moves.items() if path}
+        if captures:
+            best_move = max(captures, key=lambda move: len(captures[move]))  # Choose move with most captures
+            moves = {best_move: captures[best_move]}
+        return moves
+
 
     def _traverse_left(self, start, stop, step, color, left, skipped=[]):
         moves = {}
