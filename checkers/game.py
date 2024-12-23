@@ -7,6 +7,12 @@ class Game:
         self.win = win
         self.timer_start = time.time()
         self.time_limit = 30  # Time limit for each turn (in seconds)
+        
+    def _draw_restart_button(self):
+        pygame.draw.rect(self.win, (0, 255, 0), self.restart_button)  # Green button
+        font = pygame.font.Font(None, 36)
+        text = font.render("Restart Game", True, (255, 255, 255))
+        self.win.blit(text, (self.restart_button.x + 20, self.restart_button.y + 10))
     
     def update(self):
         self.board.draw(self.win)
