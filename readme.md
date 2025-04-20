@@ -20,7 +20,7 @@ Make sure you have Python 3.x installed on your system.
 
 Steps to Install and Run
 Clone the repository to your local machine:
-git clone https://github.com/yourusername/checkers-game.git
+git clone https://github.com/PSGg19/checkers-game.git
 Navigate to the project directory:
 cd checkers-game
 Install required dependencies:
